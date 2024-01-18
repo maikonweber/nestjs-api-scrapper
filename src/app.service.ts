@@ -14,7 +14,7 @@ export class AppService {
     this.page = await browser.newPage();
     await this.page.goto('https://web.whatsapp.com/')
     await new Promise(r => setTimeout(r, 65000));
- 
+    console.log("Preload Complete")
     return "Hello World";
   }
 
@@ -23,7 +23,7 @@ export class AppService {
     this.page.goto(http);
     await new Promise(r => setTimeout(r, 65000));
     this.page.keyboard.press('Enter');
-
+    console.log("Preload Complete")
     return "Mensage Send"
   }
 }
