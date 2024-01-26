@@ -19,8 +19,10 @@ export class AppService {
   }
 
   async getNumberMensage(phone: number) {
-    let text = `Ola, Já pensou no seu próximo destino? Viaje conosco na albatroz viagens
-    Temos os melhores valores para sua viagens, pacotes turiscos incrível, Diga sim e lhe enviaremos uma cotação de valores
+    let text = `Ola, Já pensou no seu próximo destino? 
+    Viaje conosco na albatroz viagens
+    Temos os melhores valores para sua viagens, Diga sim e 
+    lhe enviaremos uma cotação de valores
     `
     let http = `https://web.whatsapp.com/send?phone=55${phone}&text=${text}`
     console.log(http)
