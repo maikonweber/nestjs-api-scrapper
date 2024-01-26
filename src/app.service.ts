@@ -19,11 +19,14 @@ export class AppService {
   }
 
   async getNumberMensage(phone: number) {
-    let http = `https://web.whatsapp.com/send?phone=55${phone}`
+    let text = `Ola, Já pensou no seu próximo destino? Viaje conosco na albatroz viagens
+    Temos os melhores valores para sua viagens, pacotes turiscos incrível, Diga sim e lhe enviaremos uma cotação de valores
+    `
+    let http = `https://web.whatsapp.com/send?phone=55${phone}&text=${text}`
     console.log(http)
     this.page.goto(http);
-    await new Promise(r => setTimeout(r, 65000));
-    this.page.keyboard.press('Enter');
+    await new Promise(r => setTimeout(r, 75000));
+    await this.page.keyboard.press('Enter');
     console.log("Preload Complete")
     return "Mensage Send"
   }
