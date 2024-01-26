@@ -10,8 +10,8 @@ export class AppController {
     return this.appService.preload();
   }
 
-  @Get(':number:message')
-  sendMensagem(@Param('number') number: number,@Param('message') message: string): Promise<string> {
-    return this.appService.getNumberMensage(number, message)
+  @Get(':number')
+  sendMensagem(@Param('number') number: number): Promise<string> {
+    return this.appService.getNumberMensage(number)
   }
 }

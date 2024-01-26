@@ -18,8 +18,9 @@ export class AppService {
     return "Hello World";
   }
 
-  async getNumberMensage(phone: number, message: string) {
-    let http = `https://web.whatsapp.com/send?phone=55' + ${phone} &text=${message}`
+  async getNumberMensage(phone: number) {
+    let http = `https://web.whatsapp.com/send?phone=55${phone}`
+    console.log(http)
     this.page.goto(http);
     await new Promise(r => setTimeout(r, 65000));
     this.page.keyboard.press('Enter');
