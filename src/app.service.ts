@@ -26,7 +26,7 @@ export class AppService {
     `
     let http = `https://web.whatsapp.com/send?phone=55${phone}&text=${text}`
     console.log(http)
-    this.page.goto(http);
+    await this.page.goto(http);
     await new Promise(r => setTimeout(r, 75000));
     await this.page.keyboard.press('Enter');
     console.log("Preload Complete")
