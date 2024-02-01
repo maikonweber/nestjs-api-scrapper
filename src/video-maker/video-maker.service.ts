@@ -4,19 +4,27 @@ import * as path from 'path';
 import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as ffprobePath from 'ffprobe-static';
+import { TelegramService } from 'src/telegram/telegram.service';
+const crypto = require('crypto');
 
 // Set the path to the FFmpeg executable
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
+    constructor(private readonly telegramService : TelegramService) {
+
+    }
 
     createNewVdo() {
         const folderPath = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/video'
         const musicFolder = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/music'
+        const outFolder = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/output'
+
         const music = fs.readdirSync(musicFolder)
         const files = fs.readdirSync(folderPath);
-        console.log(music, files)
+        
+        
         if (files.length === 0) {
             throw new Error('No files found the specified Folder');
         }
@@ -28,7 +36,7 @@ export class VideoMakerService {
 
         const randomMusicFile = path.join(musicFolder, music[Math.floor(Math.random() * music.length)]);
 
-        const outputVideoPath = path.join(folderPath, 'output.mp4'); // Customize the output path as needed
+        const outputVideoPath = path.join(outFolder, `output_${crypto.createHash('sha256').update('42').digest('hex')}.mp4`); // Customize the output path as needed
 
         return new Promise<string>((resolve, reject) => {
             ffmpeg.ffprobe(randomVideoFile, (err, metadata) => {
@@ -63,9 +71,11 @@ export class VideoMakerService {
                         });
 
                     // Save the output video to the specified path
+                   
                     ffmpegCommand.save(outputVideoPath);
                 }
-            });
+                
+            })
         });
     }
 

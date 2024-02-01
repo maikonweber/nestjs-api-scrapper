@@ -49,9 +49,12 @@ export class TelegramService {
       ...formData.getHeaders(),
     };
 
-    const response = await axios.post(url, formData, { headers });
-
-    return response.data;
+    try {
+      const response = await axios.post(url, formData, { headers });
+      return response.data;
+    } catch (error) {
+      console.error('Error uploading video:', error.message);
+      throw error;
+    }
   }
-
 }
