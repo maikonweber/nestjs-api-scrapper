@@ -1,7 +1,9 @@
 # compiled output
 /dist
 /node_modules
-
+/src/video-maker/music
+/src/video-maker/output
+/src/video-maker/video
 # Logs
 logs
 *.log

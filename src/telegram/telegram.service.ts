@@ -15,7 +15,7 @@ export class TelegramService {
   constructor(private readonly configService: ConfigService) {
     this.botToken = configService.get<string>('TELEGRAM_TOKEN');
     this.chatId = this.configService.get<string>('TELEGRAM_CHAT_ID');
-    this.apiUrl = `https://api.telegram.org/bot${this.botToken}`;
+    this.apiUrl = `https://api.telegram.org/bot`;
   }
 
   async sendMessageToSpecificChat(
