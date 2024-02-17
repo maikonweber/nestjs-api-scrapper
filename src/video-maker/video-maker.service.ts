@@ -12,7 +12,7 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
-    constructor(private readonly telegramService : TelegramService) {
+    constructor(private readonly telegramService: TelegramService) {
 
     }
 
@@ -23,8 +23,8 @@ export class VideoMakerService {
 
         const music = fs.readdirSync(musicFolder)
         const files = fs.readdirSync(folderPath);
-        
-        
+
+
         if (files.length === 0) {
             throw new Error('No files found the specified Folder');
         }
@@ -59,7 +59,7 @@ export class VideoMakerService {
                         .outputOptions('-c:v libx264')  // Change codec if needed
                         .outputOptions('-c:a aac')      // Change audio codec if needed
                         .outputOptions('-strict -2')    // Allow experimental codecs
-                        .input(randomMusicFile)         // Add random background music
+                        // Add random background music
                         .audioCodec('aac')              // Change audio codec for music if needed
                         .on('end', () => {
                             console.log('Video creation finished.');
@@ -71,10 +71,10 @@ export class VideoMakerService {
                         });
 
                     // Save the output video to the specified path
-                   
+
                     ffmpegCommand.save(outputVideoPath);
                 }
-                
+
             })
         });
     }
