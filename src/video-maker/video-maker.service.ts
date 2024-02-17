@@ -29,9 +29,6 @@ export class VideoMakerService {
             throw new Error('No files found the specified Folder');
         }
 
-        if (music.length === 0) {
-            throw new Error("No music found in the specified folder")
-        }
         const randomVideoFile = path.join(folderPath, files[Math.floor(Math.random() * files.length)]);
 
         const randomMusicFile = path.join(musicFolder, music[Math.floor(Math.random() * music.length)]);

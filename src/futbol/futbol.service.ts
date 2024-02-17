@@ -48,7 +48,7 @@ export class FutbolService {
   }
 
   async getFixtureOdds(fixtures: number): Promise<string> {
-    this.logger.log(`Fixture Odds ${fixtures}`);
+    this.logger.log(`Fixture prediction ${fixtures}`);
     const response = await axios.get(`${this.BASE_URL}/odds`, {
       headers: {
         'x-apisports-key': this.TOKEN
