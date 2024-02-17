@@ -9,6 +9,8 @@ import { ConfigModule } from '@nestjs/config';
 import { BinanceModule } from './binance/binance.module';
 import { PaymentModule } from './payment/payment.module';
 import { FutbolModule } from './futbol/futbol.module';
+import { PrismaModule } from 'prisma/PrismaModule';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,9 +18,11 @@ import { FutbolModule } from './futbol/futbol.module';
     ConfigModule.forRoot({
       isGlobal: true, // Make the configuration module global
     }),
+    PrismaModule,
     BinanceModule,
     PaymentModule,
-    FutbolModule
+    FutbolModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService, TasksService, VideoMakerService, TelegramService],
