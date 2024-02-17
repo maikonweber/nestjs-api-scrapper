@@ -20,5 +20,6 @@ model user {
   createdAt   DateTime @default(now()) @map("created_at")
   is_admin    Boolean  @default(false) @map("is_admin")
   lastname    String
+
   cpf         String
 }

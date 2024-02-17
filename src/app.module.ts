@@ -11,6 +11,7 @@ import { PaymentModule } from './payment/payment.module';
 import { FutbolModule } from './futbol/futbol.module';
 import { PrismaModule } from 'prisma/PrismaModule';
 import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { AuthModule } from './auth/auth.module';
     BinanceModule,
     PaymentModule,
     FutbolModule,
-    AuthModule
+    AuthModule,
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService, TasksService, VideoMakerService, TelegramService],
