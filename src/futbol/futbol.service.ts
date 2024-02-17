@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateFutbolDto } from './dto/create-futbol.dto';
 import { UpdateFutbolDto } from './dto/update-futbol.dto';
 import axios from 'axios';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FutbolService {
@@ -9,9 +10,13 @@ export class FutbolService {
   private readonly TOKEN;
   private readonly Country;
 
-  constructor() {
-          
+
+  constructor(private readonly configService: ConfigService) {
+    this.BASE_URL = configService.get<string>("BASE_URL_FUTEBOL");
+    this.TOKEN = configService.get<string>("FUTEBOL_TOKEN");
+    this.Country = "Brazil";
   }
+  
 
   create(createFutbolDto: CreateFutbolDto) {
     return 'This action adds a new futbol';
