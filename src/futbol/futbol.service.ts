@@ -16,25 +16,45 @@ export class FutbolService {
     this.TOKEN = configService.get<string>("FUTEBOL_TOKEN");
     this.Country = "Brazil";
   }
-  
 
-  create(createFutbolDto: CreateFutbolDto) {
-    return 'This action adds a new futbol';
+
+  async getCurrentRound(league: number, season: number, current: boolean) {
+
+    const response = await axios.get(`${this.BASE_URL}/fixtures`, {
+      headers: {
+        'x-apisports-key': this.TOKEN
+      }, params: {
+        league: league,
+        season: season,
+      }
+    })
+
+    return response.data.response
   }
 
-  findAll() {
-    return `This action returns all futbol`;
+  async getFixturePrediction(fixtures: number): Promise<string> {
+    const response = await axios.get(`${this.BASE_URL}/predictions`, {
+      headers: {
+        'x-apisports-key': this.TOKEN
+      }, params: {
+        fixtures: fixtures,
+      }
+    });
+    console.log(response.data.response)
+    return response.data.response
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} futbol`;
+  async getFixtureOdds(fixtures: number): Promise<string> {
+    const response = await axios.get(`${this.BASE_URL}/odds`, {
+      headers: {
+        'x-apisports-key': this.TOKEN
+      }, params: {
+        fixtures: fixtures,
+      }
+    });
+    console.log(response.data.response)
+
+    return response.data.response
   }
 
-  update(id: number, updateFutbolDto: UpdateFutbolDto) {
-    return `This action updates a #${id} futbol`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} futbol`;
-  }
 }
