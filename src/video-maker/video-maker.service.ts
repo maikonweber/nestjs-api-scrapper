@@ -17,9 +17,9 @@ export class VideoMakerService {
     }
 
     createNewVdo() {
-        const folderPath = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/video'
-        const musicFolder = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/music'
-        const outFolder = '/home/nagano/Desktop/Projetos/nagano-api/src/video-maker/output'
+        const folderPath = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/video'
+        const musicFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/music'
+        const outFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/output'
 
         const music = fs.readdirSync(musicFolder)
         const files = fs.readdirSync(folderPath);
