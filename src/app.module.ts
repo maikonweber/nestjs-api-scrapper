@@ -12,12 +12,18 @@ import { FutbolModule } from './futbol/futbol.module';
 import { PrismaModule } from 'prisma/PrismaModule';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './auth/JwtContant';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true, // Make the configuration module global
+    }),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '5d' },
     }),
     PrismaModule,
     BinanceModule,
@@ -29,4 +35,4 @@ import { UsersModule } from './users/users.module';
   controllers: [AppController],
   providers: [AppService, TasksService, VideoMakerService, TelegramService],
 })
-export class AppModule {}
+export class AppModule { }
