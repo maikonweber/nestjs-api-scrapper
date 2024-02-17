@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateFutbolDto } from './dto/create-futbol.dto';
 import { UpdateFutbolDto } from './dto/update-futbol.dto';
 import axios from 'axios';
@@ -6,12 +6,14 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class FutbolService {
+  private readonly logger = new Logger(FutbolService.name);
   private readonly BASE_URL;
   private readonly TOKEN;
   private readonly Country;
 
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService) {
     this.BASE_URL = configService.get<string>("BASE_URL_FUTEBOL");
     this.TOKEN = configService.get<string>("FUTEBOL_TOKEN");
     this.Country = "Brazil";
@@ -19,7 +21,7 @@ export class FutbolService {
 
 
   async getCurrentRound(league: number, season: number, current: boolean) {
-
+    this.logger.log(`Get Current Round, League: ${league} Seasson: ${season}`)
     const response = await axios.get(`${this.BASE_URL}/fixtures`, {
       headers: {
         'x-apisports-key': this.TOKEN
@@ -33,6 +35,7 @@ export class FutbolService {
   }
 
   async getFixturePrediction(fixtures: number): Promise<string> {
+    this.logger.log(`Fixture prediction ${fixtures}`);
     const response = await axios.get(`${this.BASE_URL}/predictions`, {
       headers: {
         'x-apisports-key': this.TOKEN
@@ -45,6 +48,7 @@ export class FutbolService {
   }
 
   async getFixtureOdds(fixtures: number): Promise<string> {
+    this.logger.log(`Fixture Odds ${fixtures}`);
     const response = await axios.get(`${this.BASE_URL}/odds`, {
       headers: {
         'x-apisports-key': this.TOKEN
