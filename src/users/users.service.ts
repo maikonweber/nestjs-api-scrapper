@@ -10,6 +10,7 @@ export class UsersService {
     private readonly authService: AuthService,
     private readonly prismaService: PrismaService) {
   }
+
   create(createUserDto: CreateUserDto) {
     const hash = this.authService.hasher(createUserDto.password, '');
     return this.prismaService.user.create(
@@ -28,18 +29,33 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.prismaService.user.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} user`;
+    return this.prismaService.user.findFirstOrThrow(
+      {
+        where: {
+          id: id
+        }
+      }
+    )
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+    return this.prismaService.user.update({
+      where: {
+        id: id
+      },
+      data: UpdateUserDto
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.prismaService.user.delete({
+      where: {
+        id: id
+      }
+    });
   }
 }
