@@ -31,7 +31,7 @@ export class VideoMakerService {
 
         const randomVideoFile = path.join(folderPath, files[Math.floor(Math.random() * files.length)]);
 
-        const randomMusicFile = path.join(musicFolder, music[Math.floor(Math.random() * music.length)]);
+        // const randomMusicFile = path.join(musicFolder, music[Math.floor(Math.random() * music.length)]);
 
         const outputVideoPath = path.join(outFolder, `output_${crypto.createHash('sha256').update('42').digest('hex')}.mp4`); // Customize the output path as needed
 

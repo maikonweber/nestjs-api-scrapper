@@ -1,7 +1,7 @@
 import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import cryto from 'crypto';
+import * as crypto from 'crypto';
 import { PrismaService } from 'prisma/PrismaService';
 import { JwtService } from '@nestjs/jwt';
 
@@ -20,7 +20,8 @@ export class AuthService {
     if (rounds >= 15) {
       throw new Error(`${rounds} is greater than 15, must be less that 15`);
     }
-    return cryto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
+    // crypto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
+    return crypto.randomBytes(Math.ceil(rounds / 2)).toString('hex').slice(0, rounds);
   }
 
   hasher(password: string, salt: string) {
@@ -28,7 +29,7 @@ export class AuthService {
       salt = this.generateSalt(12);
     }
 
-    let hash = cryto.createHmac('sha512', salt);
+    let hash = crypto.createHmac('sha512', salt);
     hash.update(password);
     let value = hash.digest('hex');
 
