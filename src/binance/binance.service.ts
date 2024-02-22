@@ -40,6 +40,14 @@ export class BinanceService {
     }
   }
 
+  async kline(symbol: string, interval: string, limit: number) {
+    return this.publicCall('v3/klines', { symbol, interval, limit })
+  }
+
+  async ticker(symbol: string) {
+    return this.publicCall('/v3/ticker/24hr', { symbol })
+  }
+
   async publicCall(path, data = {}, method = "GET") {
     try {
       const qs = data ? `?${querystring.stringify(data)}` : '';

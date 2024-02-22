@@ -14,6 +14,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/JwtContant';
+import { ProductsModule } from './products/products.module';
+import { RobotApiService } from './robot-api/robot-api.service';
 
 @Module({
   imports: [
@@ -30,9 +32,10 @@ import { jwtConstants } from './auth/JwtContant';
     PaymentModule,
     FutbolModule,
     AuthModule,
-    UsersModule
+    UsersModule,
+    ProductsModule
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService, VideoMakerService, TelegramService],
+  providers: [AppService, TasksService, VideoMakerService, TelegramService, RobotApiService],
 })
 export class AppModule { }

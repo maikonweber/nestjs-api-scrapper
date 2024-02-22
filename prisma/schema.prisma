@@ -11,15 +11,24 @@ datasource db {
 }
 
 model user {
-  id          Int      @id @default(autoincrement()) @map("id")
-  username    String   @unique
-  name        String
-  email       String   @unique
-  hashed      String
-  salt        String
-  createdAt   DateTime @default(now()) @map("created_at")
-  is_admin    Boolean  @default(false) @map("is_admin")
-  lastname    String
+  id        Int      @id @default(autoincrement()) @map("id")
+  username  String   @unique
+  name      String
+  email     String   @unique
+  hashed    String
+  salt      String
+  createdAt DateTime @default(now()) @map("created_at")
+  is_admin  Boolean  @default(false) @map("is_admin")
+  lastname  String
 
-  cpf         String
+  cpf String
+}
+
+model product {
+  id    Int     @id @default(autoincrement()) @map("id")
+  name  String
+  type  String
+  color String
+  price Decimal
+  url   String
 }
