@@ -7,22 +7,25 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build_and_test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build and Test
+        run: |
+          docker build -t myapp .
+          docker run myapp npm test
+
+  deploy_to_prod:
+    runs-on: ubuntu-latest
+    needs: build_and_test
+    if: success('build_and_test')
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-
-    - name: Build
-      run: |
-        npm install
-        gulp
+      - name: Deploy to Production
+        run: |
+          # Add your production deployment steps here
+          # For example, push the Docker image
