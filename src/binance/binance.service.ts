@@ -40,7 +40,7 @@ export class BinanceService {
     }
   }
 
-  async kline(symbol: string, interval: string, limit: number) {
+  async kline(symbol: string, interval: string, limit: number): Promise<[]> {
     return this.publicCall('v3/klines', { symbol, interval, limit })
   }
 
@@ -48,7 +48,7 @@ export class BinanceService {
     return this.publicCall('/v3/ticker/24hr', { symbol })
   }
 
-  async publicCall(path, data = {}, method = "GET") {
+  async publicCall(path, data = {}, method = "GET"): Promise<[]> {
     try {
       const qs = data ? `?${querystring.stringify(data)}` : '';
       const result = await axios({
