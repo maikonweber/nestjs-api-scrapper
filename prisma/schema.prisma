@@ -11,17 +11,74 @@ datasource db {
 }
 
 model user {
-  id        Int      @id @default(autoincrement()) @map("id")
-  username  String   @unique
-  name      String
-  email     String   @unique
-  hashed    String
-  salt      String
-  createdAt DateTime @default(now()) @map("created_at")
-  is_admin  Boolean  @default(false) @map("is_admin")
-  lastname  String
+  id                     Int                      @id @default(autoincrement()) @map("id")
+  username               String                   @unique
+  name                   String
+  email                  String                   @unique
+  hashed                 String
+  salt                   String
+  createdAt              DateTime                 @default(now()) @map("created_at")
+  is_admin               Boolean                  @default(false) @map("is_admin")
+  lastname               String
+  cpf                    String
+  caixa_central          caixa_central[]
+  carteira               carteira[]
+  investimentos_carteira investimentos_carteira[]
+  investimento_user      investimento_user[]
+}
 
-  cpf String
+model carteira {
+  saldo   Decimal
+  id      Int     @id @default(autoincrement()) @map("id")
+  user_id Int
+  user    user    @relation(fields: [user_id], references: [id])
+}
+
+model rentabilida_tabela {
+  id   Int     @id @default(autoincrement()) @map("id")
+  tipo String
+  rent Decimal
+}
+
+model investimentos_carteira {
+  saldo   Decimal
+  id      Int     @id @default(autoincrement()) @map("id")
+  user_id Int
+  user    user    @relation(fields: [user_id], references: [id])
+}
+
+model investimento_user {
+  id            Int      @id @default(autoincrement()) @map("id")
+  rentabilidade Decimal
+  value         Decimal
+  start_time    DateTime
+  end_time      DateTime
+  expect        Decimal
+  user_id       Int
+  user          user     @relation(fields: [user_id], references: [id])
+}
+
+model caixa_central {
+  id       Int      @id @default(autoincrement()) @map("id")
+  nome     String
+  enum     tipo
+  valor    Decimal
+  user_id  Int
+  user     user     @relation(fields: [user_id], references: [id])
+  sub_tipo sub_tipo
+}
+
+enum sub_tipo {
+  Compras
+  Lazer
+  Transporte
+  Contas
+  Investimentos
+}
+
+enum tipo {
+  RECEITA
+  DESPESA
 }
 
 model product {
