@@ -16,27 +16,35 @@ export class CaixaController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: CreateCaixaDto })
-  create(@Body() createCaixaDto: CreateCaixaDto, @Request() req) {
+  create(@Body() createCaixaDto: CreateCaixaDto, @Request() req: any) {
     const user_id = 1
-    return this.caixaService.create(createCaixaDto, req.user.user_id);
+    return this.caixaService.create(createCaixaDto, req.user.id);
   }
 
-  @Get()
+  @Get("find-all")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.caixaService.findAll();
   }
 
-  @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('find-one/:id')
   findOne(@Param('id') id: string) {
     return this.caixaService.findOne(+id);
   }
 
-  @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateCaixaDto: UpdateCaixaDto) {
     return this.caixaService.update(+id, updateCaixaDto);
   }
 
-  @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.caixaService.remove(+id);
   }

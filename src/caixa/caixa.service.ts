@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCaixaDto } from './dto/create-caixa.dto';
+import { CreateCaixaDto, Tipo } from './dto/create-caixa.dto';
 import { UpdateCaixaDto } from './dto/update-caixa.dto';
 import { PrismaService } from 'prisma/PrismaService';
 
@@ -21,18 +21,52 @@ export class CaixaService {
   }
 
   findAll() {
-    return `This action returns all caixa`;
+    return this.prismaService.caixa_central.findMany();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} caixa`;
+    return this.prismaService.caixa_central.findFirstOrThrow({
+      where: {
+        id: id
+      }
+    });
+  }
+
+  findOneByType(type: Tipo) {
+    return this.prismaService.caixa_central.findFirstOrThrow({
+      where: {
+        typo: type
+      }
+    })
+  }
+
+  findOneByName(name: string) {
+    return this.prismaService.caixa_central.findFirstOrThrow({
+      where: {
+        nome: name
+      }
+    })
   }
 
   update(id: number, updateCaixaDto: UpdateCaixaDto) {
-    return `This action updates a #${id} caixa`;
+    return this.prismaService.caixa_central.update({
+      data: updateCaixaDto,
+      where: {
+        id: id
+      }
+    }
+    );
   }
 
   remove(id: number) {
-    return `This action removes a #${id} caixa`;
+    return this.prismaService.caixa_central.delete({
+      where: {
+        id: id
+      }
+    });
+  }
+
+  removeAll(id: number) {
+    return this.prismaService.caixa_central.deleteMany();
   }
 }

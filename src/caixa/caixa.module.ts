@@ -5,6 +5,7 @@ import { PrismaModule } from 'prisma/PrismaModule';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/auth/JwtContant';
+import { JwtStrategy } from 'src/auth/strategy/localStrategy';
 
 @Module({
   imports: [PrismaModule,
@@ -13,6 +14,6 @@ import { jwtConstants } from 'src/auth/JwtContant';
       signOptions: { expiresIn: '5d' },
     })],
   controllers: [CaixaController],
-  providers: [CaixaService, AuthService],
+  providers: [CaixaService, AuthService, JwtStrategy],
 })
 export class CaixaModule { }
