@@ -15,7 +15,6 @@ import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/JwtContant';
 import { ProductsModule } from './products/products.module';
-import { RobotApiService } from './robot-api/robot-api.service';
 import { CaixaModule } from './caixa/caixa.module';
 
 @Module({
@@ -38,6 +37,6 @@ import { CaixaModule } from './caixa/caixa.module';
     CaixaModule
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService, VideoMakerService, TelegramService, RobotApiService],
+  providers: [AppService, TasksService, VideoMakerService, TelegramService],
 })
 export class AppModule { }

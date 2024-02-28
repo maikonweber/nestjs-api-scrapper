@@ -1,15 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { CaixaService } from './caixa.service';
 import { CreateCaixaDto } from './dto/create-caixa.dto';
 import { UpdateCaixaDto } from './dto/update-caixa.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
+import { JwtStrategy } from 'src/auth/strategy/localStrategy';
+import { JwtAuthGuard } from 'src/auth/Guard/localGuard';
 
+@ApiTags('Caixa')
 @Controller('caixa')
 export class CaixaController {
-  constructor(private readonly caixaService: CaixaService) {}
+  constructor(private readonly caixaService: CaixaService) { }
 
-  @Post()
-  create(@Body() createCaixaDto: CreateCaixaDto) {
-    return this.caixaService.create(createCaixaDto);
+  @Post("add-fluxo-caixa")
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiBody({ type: CreateCaixaDto })
+  create(@Body() createCaixaDto: CreateCaixaDto, @Request() req) {
+    const user_id = 1
+    return this.caixaService.create(createCaixaDto, req.user.user_id);
   }
 
   @Get()

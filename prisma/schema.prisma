@@ -61,11 +61,12 @@ model investimento_user {
 model caixa_central {
   id       Int      @id @default(autoincrement()) @map("id")
   nome     String
-  enum     tipo
+  typo     Tipo
   valor    Decimal
   user_id  Int
   user     user     @relation(fields: [user_id], references: [id])
   sub_tipo sub_tipo
+  date     DateTime @default(now())
 }
 
 enum sub_tipo {
@@ -76,7 +77,7 @@ enum sub_tipo {
   Investimentos
 }
 
-enum tipo {
+enum Tipo {
   RECEITA
   DESPESA
 }

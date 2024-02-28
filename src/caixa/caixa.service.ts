@@ -8,9 +8,16 @@ export class CaixaService {
   constructor(private readonly prismaService: PrismaService) {
   }
 
-  create(createCaixaDto: CreateCaixaDto) {
-    // Criar controle de caixa entrada e saida.
-    return 
+  create(createCaixaDto: CreateCaixaDto, user_id: number) {
+    return this.prismaService.caixa_central.create({
+      data: {
+        nome: createCaixaDto.nome,
+        typo: createCaixaDto.typo,
+        valor: createCaixaDto.valor,
+        user_id: user_id,
+        sub_tipo: createCaixaDto.sub_tipo
+      }
+    })
   }
 
   findAll() {
