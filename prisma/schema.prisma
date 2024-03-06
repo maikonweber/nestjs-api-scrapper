@@ -25,6 +25,9 @@ model user {
   carteira               carteira[]
   investimentos_carteira investimentos_carteira[]
   investimento_user      investimento_user[]
+  user_transaction       bitcoin_transactions[]
+  binance_key_user       binance_key_user[]
+  transfer_log           transfer_carteira_log[]
 }
 
 model carteira {
@@ -47,6 +50,25 @@ model investimentos_carteira {
   user    user    @relation(fields: [user_id], references: [id])
 }
 
+
+model binance_key_user {
+  id         Int    @id @default(autoincrement()) @map("id")
+  key        String
+  app_secret String
+  url        String
+  user_id    Int
+  user       user   @relation(fields: [user_id], references: [id])
+}
+
+model transfer_carteira_log {
+  id         Int     @id @default(autoincrement()) @map("id")
+  amout      Decimal
+  sender_id  Int
+  receive_id Int
+  user       user    @relation(fields: [user_id], references: [id])
+  user_id Int 
+}
+
 model investimento_user {
   id            Int      @id @default(autoincrement()) @map("id")
   rentabilidade Decimal
@@ -58,15 +80,28 @@ model investimento_user {
   user          user     @relation(fields: [user_id], references: [id])
 }
 
+model bitcoin_transactions {
+  transaction_id Int      @id @default(autoincrement()) @map("id")
+  amount         Decimal  @db.Decimal(20, 8)
+  start_time     DateTime @default(now())
+  end_time       DateTime
+  entry_point    Decimal  @db.Decimal(20, 8)
+  close_point    Decimal  @db.Decimal(20, 8)
+  user           user     @relation(fields: [user_id], references: [id])
+  win_loss       Boolean
+  amout_win      Decimal  @db.Decimal(20, 8)
+  user_id        Int
+}
+
 model caixa_central {
-  id       Int      @id @default(autoincrement()) @map("id")
-  nome     String
-  typo     Tipo
-  valor    Decimal
-  user_id  Int
-  user     user     @relation(fields: [user_id], references: [id])
-  sub_tipo sub_tipo
-  date     DateTime @default(now())
+  id            Int      @id @default(autoincrement()) @map("id")
+  nome          String
+  typo          Tipo
+  valor         Decimal
+  user_id       Int
+  user          user     @relation(fields: [user_id], references: [id])
+  sub_tipo      sub_tipo
+  registre_date DateTime @default(now())
 }
 
 enum sub_tipo {
