@@ -1,69 +1,67 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CreateBinanceDto } from './dto/create-binance.dto';
-import { UpdateBinanceDto } from './dto/update-binance.dto';
 import { ConfigService } from '@nestjs/config';
-import moment from 'moment';
-import crypto from 'crypto';
-import querystring from 'querystring';
-import axios from 'axios';
+import { Spot } from '@binance/connector';
+import { kline_extract } from 'src/robot-api/kline_extract';
 
 @Injectable()
 export class BinanceService {
   private readonly logger = new Logger(BinanceService.name);
   private readonly apiKey;
-  private readonly apiUrl;
   private readonly apiSecret;
+  private readonly apiUrl;
+  private readonly client: Spot;
+
   constructor(private readonly configService: ConfigService) {
-    this.apiKey = configService.get<string>("BINANCE_KEY");
-    this.apiUrl = configService.get<string>("BINANCE_URL");
-    this.apiSecret = configService.get<string>("BINANCE_SECRET");
+    this.apiKey = configService.get<string>('BINANCE_KEY');
+    this.apiSecret = configService.get<string>('BINANCE_SECRET');
+    this.apiUrl = configService.get<string>('BINANCE_URL');
+
+    // Initialize the Binance Spot client
+    this.client = new Spot(
+      this.apiKey,
+      this.apiSecret,
+    );
   }
 
-  async privateCall(path, data = {}, method = "GET") {
-    const timestamp = moment().valueOf();
-    const signature = crypto.createHmac('sha256', this.apiSecret)
-      .update(`${querystring.stringify({ ...data, timestamp })}`)
-      .digest('hex');
 
-    const newData = { ...data, timestamp, signature };
-    const qs = `?${querystring.stringify(newData)}`;
-
+  async getAccountInformation() {
     try {
-      const result = await axios({
-        method,
-        url: `${this.apiUrl}${path}${qs}`,
-        headers: { 'X-MBX-APIKEY': this.apiKey }
-      })
-      return result.data;
-    } catch (err) {
-      this.logger.error(err);
+      const accountInfo = await this.client.account();
+      return accountInfo.data;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
     }
   }
 
-  async kline(symbol: string, interval: string, limit: number): Promise<[]> {
-    return this.publicCall('v3/klines', { symbol, interval, limit })
-  }
-
-  async ticker(symbol: string) {
-    return this.publicCall('/v3/ticker/24hr', { symbol })
-  }
-
-  async publicCall(path, data = {}, method = "GET"): Promise<[]> {
+  async placeNewOrder(symbol: string, side: string, type: string, params: any) {
     try {
-      const qs = data ? `?${querystring.stringify(data)}` : '';
-      const result = await axios({
-        method: method,
-        url: `${this.apiUrl}${path}${qs}`
-      })
-
-      return result.data;
-
-    } catch (err) {
-      this.logger.error(err);
+      const orderResponse = await this.client.newOrder(symbol, side, type, params);
+      return orderResponse.data;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
     }
   }
 
-  async time() {
-    return this.publicCall('/v3/time')
+  async getMarketKlineData(symbol: string, interval: string, limit: number) {
+    try {
+      const klineData = await this.client.klines(symbol, interval, { limit: limit })
+      return klineData.data;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async getMarketKlineDataWithStatic(symbol: string, interval: string, limit: number) {
+    try {
+      const klineData = await this.client.klines(symbol, interval, { limit: limit })
+      const estatistica = new kline_extract(klineData.data)
+      return estatistica.getAllProperties();
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
   }
 }
