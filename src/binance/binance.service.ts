@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Spot } from '@binance/connector';
 import { kline_extract } from 'src/robot-api/kline_extract';
+import { WebsocketStream } from '@binance/connector';
 
 @Injectable()
 export class BinanceService {
@@ -10,6 +11,8 @@ export class BinanceService {
   private readonly apiSecret;
   private readonly apiUrl;
   private readonly client: Spot;
+  private websocketStreamClient: WebsocketStream;
+
 
   constructor(private readonly configService: ConfigService) {
     this.apiKey = configService.get<string>('BINANCE_KEY');
@@ -21,6 +24,32 @@ export class BinanceService {
       this.apiKey,
       this.apiSecret,
     );
+
+
+  }
+
+
+  async checkOpenOrders(tradingPair: string): Promise<boolean> {
+    try {
+      // Get all orders for the specified trading pair
+      const allOrders = await this.client.allOrders(tradingPair);
+
+      
+
+      if (allOrders.length > 0) {
+        this.logger.log('You have open orders:');
+        allOrders.forEach(order => {
+          this.logger.log(`Order ID: ${order.orderId}, Symbol: ${order.symbol}, Type: ${order.type}, Quantity: ${order.origQty}, Price: ${order.price}`);
+        });
+        return true;
+      } else {
+        this.logger.log('You have no open orders.');
+        return false;
+      }
+    } catch (error) {
+      this.logger.error(`Error checking open orders: ${error.message}`);
+      throw error;
+    }
   }
 
 
@@ -34,9 +63,14 @@ export class BinanceService {
     }
   }
 
+
+
   async placeNewOrder(symbol: string, side: string, type: string, params: any) {
     try {
       const orderResponse = await this.client.newOrder(symbol, side, type, params);
+
+      console.log(orderResponse);
+
       return orderResponse.data;
     } catch (error) {
       this.logger.error(error);
@@ -64,4 +98,6 @@ export class BinanceService {
       throw error;
     }
   }
+
+
 }

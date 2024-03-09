@@ -7,10 +7,6 @@ import { UpdateBinanceDto } from './dto/update-binance.dto';
 export class BinanceController {
   constructor(private readonly binanceService: BinanceService) { }
 
-  @Get("get-candles")
-  getCandles() {
-    return this.binanceService.getMarketKlineDataWithStatic("BTCUSDT", "1d", 99);
-  }
 
 
 }

@@ -16,6 +16,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/JwtContant';
 import { ProductsModule } from './products/products.module';
 import { CaixaModule } from './caixa/caixa.module';
+import { BinanceService } from './binance/binance.service';
+import { OrderModule } from './order/order.module';
+import { OrderService } from './order/order.service';
 
 @Module({
   imports: [
@@ -34,9 +37,10 @@ import { CaixaModule } from './caixa/caixa.module';
     AuthModule,
     UsersModule,
     ProductsModule,
-    CaixaModule
+    CaixaModule,
+    OrderModule
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService, VideoMakerService, TelegramService],
+  providers: [AppService, TasksService, VideoMakerService, TelegramService, BinanceService, OrderService],
 })
 export class AppModule { }

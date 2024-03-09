@@ -93,6 +93,15 @@ model bitcoin_transactions {
   user_id        Int
 }
 
+model testOrder {
+  id Int @id @default(autoincrement()) @map("id")
+  buy_values Decimal @db.Decimal(20, 8)
+  sell_values Decimal @db.Decimal(20, 8)
+  open Boolean
+  created DateTime @default(now())
+  close DateTime
+}
+
 model caixa_central {
   id            Int      @id @default(autoincrement()) @map("id")
   nome          String
