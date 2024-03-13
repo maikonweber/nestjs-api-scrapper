@@ -13,7 +13,7 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'], // Define the allowed headers
   };
 
-  app.enableCors(corsOptions);
+  app.enableCors();
 
 
   const config = new DocumentBuilder()
