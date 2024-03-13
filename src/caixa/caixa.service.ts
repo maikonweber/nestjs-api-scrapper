@@ -42,10 +42,11 @@ export class CaixaService {
     });
   }
 
-  findAllDespesa() {
+  findAllDespesa(user_id) {
     return this.prismaService.caixa_central.findMany({
       where: {
-        typo: "DESPESA"
+        typo: "DESPESA",
+        user_id: user_id
       }
     })
   }

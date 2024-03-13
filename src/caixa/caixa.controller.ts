@@ -51,8 +51,14 @@ export class CaixaController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('get-despesa')
-  getAllDespesa(@Param('id') id: string, @Request() req: any) {
-    return this.caixaService.getAllValorDespesa(req.user.id);
+  async getAllDespesa(@Param('id') id: string, @Request() req: any) {
+    try {
+      const despesa = await this.caixaService.findAllDespesa(req.user.id); // Assuming this returns the desired data
+      return { success: true, data: despesa }; // Return a JSON response with data
+    } catch (error) {
+      console.error('Error fetching despesa:', error);
+      return { success: false, error: 'An error occurred while fetching despesa' }; // Return error response
+    }
   }
 
 }
