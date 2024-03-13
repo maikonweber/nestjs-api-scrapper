@@ -2,10 +2,20 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
- 
- 
+
+  const corsOptions: CorsOptions = {
+    origin: true, // This will allow requests from all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Define the HTTP methods to be allowed
+    allowedHeaders: ['Content-Type', 'Authorization'], // Define the allowed headers
+  };
+
+  app.enableCors(corsOptions);
+
+
   const config = new DocumentBuilder()
     .setTitle('Nagano System API')
     .setDescription('Nagano System Api')

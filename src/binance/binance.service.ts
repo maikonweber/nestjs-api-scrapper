@@ -34,9 +34,11 @@ export class BinanceService {
       // Get all orders for the specified trading pair
       const allOrders = await this.client.allOrders(tradingPair);
 
-      const openOrders = allOrders.filter(order => order.status === 'NEW' || order.status === 'PARTIALLY_FILLED');
 
-      if (openOrders.length > 0) {
+
+
+
+      if (allOrders.length > 0) {
         this.logger.log('You have open orders:');
         allOrders.forEach(order => {
           this.logger.log(`Order ID: ${order.orderId}, Symbol: ${order.symbol}, Type: ${order.type}, Quantity: ${order.origQty}, Price: ${order.price}`);

@@ -47,4 +47,12 @@ export class CaixaController {
   remove(@Param('id') id: string, @Request() req: any) {
     return this.caixaService.remove(+id, req.user.id);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('get-despesa')
+  getAllDespesa(@Param('id') id: string, @Request() req: any) {
+    return this.caixaService.getAllValorDespesa(req.user.id);
+  }
+
 }
