@@ -61,4 +61,17 @@ export class CaixaController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('get-receita')
+  async getAllReceita(@Param('id') id: string, @Request() req: any) {
+    try {
+      const despesa = await this.caixaService.findAllReceita(req.user.id); // Assuming this returns the desired data
+      return { success: true, data: despesa }; // Return a JSON response with data
+    } catch (error) {
+      console.error('Error fetching despesa:', error);
+      return { success: false, error: 'An error occurred while fetching despesa' }; // Return error response
+    }
+  }
+
 }

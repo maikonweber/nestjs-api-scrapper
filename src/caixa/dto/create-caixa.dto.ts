@@ -24,9 +24,6 @@ export class CreateCaixaDto {
     @ApiProperty()
     valor: number;
 
-    @ApiProperty()
-    @IsNumber()
-    user_id: number;
 
     @ApiProperty({ enum: SubTipo })
     sub_tipo: SubTipo;
