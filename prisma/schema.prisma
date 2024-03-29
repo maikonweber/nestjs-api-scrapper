@@ -20,7 +20,7 @@ model user {
   createdAt              DateTime                 @default(now()) @map("created_at")
   is_admin               Boolean                  @default(false) @map("is_admin")
   lastname               String
-  cpf                    String
+  cpf                    String                   @unique
   caixa_central          caixa_central[]
   carteira               carteira[]
   investimentos_carteira investimentos_carteira[]
@@ -50,7 +50,6 @@ model investimentos_carteira {
   user    user    @relation(fields: [user_id], references: [id])
 }
 
-
 model binance_key_user {
   id         Int    @id @default(autoincrement()) @map("id")
   key        String
@@ -66,7 +65,7 @@ model transfer_carteira_log {
   sender_id  Int
   receive_id Int
   user       user    @relation(fields: [user_id], references: [id])
-  user_id Int 
+  user_id    Int
 }
 
 model investimento_user {
@@ -94,12 +93,12 @@ model bitcoin_transactions {
 }
 
 model testOrder {
-  id Int @id @default(autoincrement()) @map("id")
-  buy_values Decimal @db.Decimal(20, 8)
-  sell_values Decimal @db.Decimal(20, 8)
-  open Boolean
-  created DateTime @default(now())
-  close DateTime
+  id          Int      @id @default(autoincrement()) @map("id")
+  buy_values  Decimal  @db.Decimal(20, 8)
+  sell_values Decimal  @db.Decimal(20, 8)
+  open        Boolean
+  created     DateTime @default(now())
+  close       DateTime
 }
 
 model caixa_central {
@@ -119,6 +118,14 @@ enum sub_tipo {
   Transporte
   Contas
   Investimentos
+  Saude
+  Moradia
+  Seguros
+  Dividas
+  Caridade
+  Imposto
+  Outros
+  Educacao
 }
 
 enum Tipo {

@@ -74,4 +74,17 @@ export class CaixaController {
     }
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('total-saldo')
+  async getSaldoTotal(@Request() req: any) {
+    try {
+      const despesa = await this.caixaService.getSaldo(req.user.id)
+      console.log("---------------------", despesa)
+      return { success: true, data: despesa }
+    } catch (e) {
+      return { sucess: false, error: "An error ocurred while" };
+    }
+  }
 }
+
