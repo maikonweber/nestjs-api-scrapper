@@ -76,15 +76,59 @@ export class CaixaController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get('total-saldo')
-  async getSaldoTotal(@Request() req: any) {
+  @Get('total-despesa')
+  async getTotalDespesa(@Request() req: any) {
     try {
-      const despesa = await this.caixaService.getSaldo(req.user.id)
-      console.log("---------------------", despesa)
+      const despesa = await this.caixaService.getAllValorDespesa(req.user.id)
+
       return { success: true, data: despesa }
     } catch (e) {
       return { sucess: false, error: "An error ocurred while" };
     }
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('total-receita')
+  async getTotalReceita(@Request() req: any) {
+    try {
+      const despesa = await this.caixaService.getAllValorReceita(req.user.id)
+
+      return { success: true, data: despesa }
+    } catch (e) {
+      return { sucess: false, error: "An error ocurred while" };
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('total-saldo')
+  async getTotalSaldo(@Request() req: any) {
+    try {
+      const despesa = await this.caixaService.getSaldo(req.user.id)
+
+      return { success: true, data: despesa }
+    } catch (e) {
+      return { sucess: false, error: "An error ocurred while" };
+    }
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('total-last-sum')
+  async getLastSum(@Request() req: any) {
+    try {
+      const despesa = await this.caixaService.getValorDespesaPorDia(req.user.id)
+
+      return { success: true, data: despesa }
+    } catch (e) {
+      return { sucess: false, error: "An error ocurred while" };
+    }
+  }
+
+
+
 }
+
+
 

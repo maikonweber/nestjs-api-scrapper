@@ -53,60 +53,50 @@ export class CaixaService {
 
 
   async getAllValorReceita(user_id: number) {
-    const receitas = await this.prismaService.caixa_central.findMany({
-      where: {
-        typo: "RECEITA",
-        user_id: user_id
-      },
-      select: {
-        valor: true
-      }
-    });
+    const queryResult = await this.prismaService.$queryRaw`SELECT SUM(valor) AS total FROM caixa_central WHERE typo = 'RECEITA' AND user_id = ${user_id}`;
 
-    // Sum the values of Receita
-    // Somar os valores de Receita
-    const receitaTotal = receitas.reduce(
-      (sum, receita) => new Decimal(sum).plus(receita.valor),
-      new Decimal(0)
-    );
+    const despesaTotal = new Decimal(queryResult[0].total || 0);
 
-
-    return receitaTotal
+    return despesaTotal;
 
   }
 
   async getSaldo(user_id: number) {
-    const receitaTotal = await this.getAllValorReceita(user_id);
-    const despesaTotal = await this.getAllValorDespesa(user_id);
+    const queryResult = await this.prismaService.$queryRaw`SELECT SUM(valor) AS total FROM caixa_central where user_id = ${user_id}`;
 
-    // Subtract Despesa from Receita to get the saldo
-    const saldo = new Decimal(receitaTotal).minus(despesaTotal);
+    const despesaTotal = new Decimal(queryResult[0].total || 0);
 
-    return saldo.toNumber(); // Convert back to a regular number if needed
+    return despesaTotal;// Convert back to a regular number if needed
   }
 
 
   async getAllValorDespesa(user_id: number) {
-    const receitas = await this.prismaService.caixa_central.findMany({
-      where: {
-        typo: "DESPESA",
-        user_id: user_id
-      },
-      select: {
-        valor: true
-      }
-    });
+    const queryResult = await this.prismaService.$queryRaw`SELECT SUM(valor) AS total FROM caixa_central WHERE typo = 'DESPESA' AND user_id = ${user_id}`;
 
-    // Sum the values of Receita
-    // Somar os valores de Receita
-    const receitaTotal = receitas.reduce(
-      (sum, receita) => new Decimal(sum).plus(receita.valor),
-      new Decimal(0)
-    );
+    const despesaTotal = new Decimal(queryResult[0].total || 0);
 
+    return despesaTotal;
 
-    return receitaTotal
+  }
 
+  async getValorDespesaPorDia(user_id: number) {
+    const queryResult = await this.prismaService.$queryRaw`
+      SELECT 
+      DATE(registre_date) AS day,
+      SUM(valor) AS total
+    FROM 
+      caixa_central 
+    WHERE 
+      user_id = 1 AND registre_date >= CURRENT_DATE - INTERVAL '15 days'
+    GROUP BY 
+      day
+    ORDER BY 
+      day ASC
+    `;
+
+    console.log(queryResult)
+
+    return queryResult;
   }
 
   findAllReceita(user_id: number) {
