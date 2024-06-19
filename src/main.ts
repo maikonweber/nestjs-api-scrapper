@@ -17,8 +17,8 @@ async function bootstrap() {
 
 
   const config = new DocumentBuilder()
-    .setTitle('Nagano System API')
-    .setDescription('Nagano System Api')
+    .setTitle('Mutter System API')
+    .setDescription('Mutter System Api')
     .setVersion('1.0')
     .addTag('')
     .addBearerAuth()
