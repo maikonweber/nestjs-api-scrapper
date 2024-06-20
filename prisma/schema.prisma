@@ -1,13 +1,10 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
 }
 
 model user {
@@ -21,12 +18,12 @@ model user {
   is_admin               Boolean                  @default(false) @map("is_admin")
   lastname               String
   cpf                    String                   @unique
+  binance_key_user       binance_key_user[]
+  user_transaction       bitcoin_transactions[]
   caixa_central          caixa_central[]
   carteira               carteira[]
-  investimentos_carteira investimentos_carteira[]
   investimento_user      investimento_user[]
-  user_transaction       bitcoin_transactions[]
-  binance_key_user       binance_key_user[]
+  investimentos_carteira investimentos_carteira[]
   transfer_log           transfer_carteira_log[]
 }
 
@@ -64,8 +61,8 @@ model transfer_carteira_log {
   amout      Decimal
   sender_id  Int
   receive_id Int
-  user       user    @relation(fields: [user_id], references: [id])
   user_id    Int
+  user       user    @relation(fields: [user_id], references: [id])
 }
 
 model investimento_user {
@@ -80,16 +77,16 @@ model investimento_user {
 }
 
 model bitcoin_transactions {
-  transaction_id Int      @id @default(autoincrement()) @map("id")
+  transaction_id Int      @id @default(autoincrement()) @map("transaction_id")
   amount         Decimal  @db.Decimal(20, 8)
   start_time     DateTime @default(now())
   end_time       DateTime
   entry_point    Decimal  @db.Decimal(20, 8)
   close_point    Decimal  @db.Decimal(20, 8)
-  user           user     @relation(fields: [user_id], references: [id])
   win_loss       Boolean
   amout_win      Decimal  @db.Decimal(20, 8)
   user_id        Int
+  user           user     @relation(fields: [user_id], references: [id])
 }
 
 model testOrder {
@@ -104,12 +101,40 @@ model testOrder {
 model caixa_central {
   id            Int      @id @default(autoincrement()) @map("id")
   nome          String
-  typo          Tipo
   valor         Decimal
   user_id       Int
-  user          user     @relation(fields: [user_id], references: [id])
   sub_tipo      sub_tipo
+  typo          Tipo
   registre_date DateTime @default(now())
+  user          user     @relation(fields: [user_id], references: [id])
+}
+
+model product {
+  id    Int     @id @default(autoincrement()) @map("id")
+  name  String
+  type  String
+  color String
+  price Decimal
+  url   String
+}
+
+model tabela_video_cortes {
+  id           Int            @id @default(autoincrement()) @map("id")
+  nome_arquivo String         @db.VarChar(255)
+  tempo_inicia Int
+  tempo_final  Int
+  deletado     Boolean?       @default(false)
+  created_at   DateTime?      @default(now()) @db.Timestamp(6)
+  categoria    String?        @db.VarChar(255)
+  tabela_views tabela_views[]
+}
+
+model tabela_views {
+  id              Int                  @id @default(autoincrement()) @map("id")
+  fk_video_cortes Int?
+  views           Int
+  publicado       DateTime             @db.Date
+  video_corte     tabela_video_cortes? @relation(fields: [fk_video_cortes], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum sub_tipo {
@@ -131,13 +156,4 @@ enum sub_tipo {
 enum Tipo {
   RECEITA
   DESPESA
-}
-
-model product {
-  id    Int     @id @default(autoincrement()) @map("id")
-  name  String
-  type  String
-  color String
-  price Decimal
-  url   String
 }

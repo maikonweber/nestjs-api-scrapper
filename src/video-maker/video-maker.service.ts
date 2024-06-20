@@ -5,6 +5,7 @@ import * as ffmpeg from 'fluent-ffmpeg';
 import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as ffprobePath from 'ffprobe-static';
 import { TelegramService } from 'src/telegram/telegram.service';
+import { PrismaService } from 'prisma/PrismaService';
 const crypto = require('crypto');
 
 // Set the path to the FFmpeg executable
@@ -12,7 +13,9 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
-    constructor(private readonly telegramService: TelegramService) {
+    constructor(
+        private readonly prismaService: PrismaService
+    ) {
 
     }
 
@@ -21,7 +24,7 @@ export class VideoMakerService {
         const musicFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/music'
         const outFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/output'
 
-        const music = fs.readdirSync(musicFolder)
+        // const music = fs.readdirSync(musicFolder)
         const files = fs.readdirSync(folderPath);
 
 
