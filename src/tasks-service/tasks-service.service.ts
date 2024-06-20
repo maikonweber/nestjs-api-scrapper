@@ -19,12 +19,11 @@ export class TasksService {
   ) {
 
   }
-  // @Cron('0 */2 * * *')
-
-  // async handleVideoMensage(){
-  //   const nameString = await this.videoMaker.createNewVdo()
-  //   return this.telegramService.uploadVideo('-4057079951', nameString)
-  // }
+  @Cron('0 */2 * * *')
+  async handleVideoMensage() {
+    const nameString = await this.videoMaker.createNewVdo("Anime")
+    return this.telegramService.uploadVideo('-4057079951', nameString)
+  }
 
   // @Cron(CronExpression.EVERY_MINUTE)
   // async binanceRobot() {
@@ -86,7 +85,7 @@ export class TasksService {
 
   //       orderParams.price = current_price
 
- 
+
 
 
   //       await this.orderService.create(current_price);

@@ -9,7 +9,7 @@ export class AppController {
     private readonly appService: AppService,
     private readonly videoMaker: VideoMakerService,
     private readonly telegramService: TelegramService
-    ) {}
+  ) { }
 
   // @Get()
   // preload(): Promise<string> {
@@ -22,13 +22,13 @@ export class AppController {
   // }
 
   @Get('/create-video')
-  async createVideo() : Promise<void> {
-    const string = await this.videoMaker.createNewVdo();
+  async createVideo(): Promise<void> {
+    const string = await this.videoMaker.createNewVdo("Anime");
     return this.telegramService.uploadVideo('-4057079951', string)
   }
 
   @Get('/send-message')
   async sendMessage() {
-    return this.telegramService.sendMessageToSpecificChat('Ola',"-4057079951")
+    return this.telegramService.sendMessageToSpecificChat('Ola', "-4057079951")
   }
 }
