@@ -1,16 +1,7 @@
 {
 	"folders": [
 		{
-			"path": "../../../../../lading-page-run"
-		},
-		{
 			"path": "../.."
-		},
-		{
-			"path": "../../../Consumers"
-		},
-		{
-			"path": "../../../../../svelteKit-app"
 		}
 	]
 }
