@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './AppController';
+import { VideoController } from './AppController';
 import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks-service/tasks-service.service';
@@ -45,9 +45,10 @@ import { QueueService } from './queue/queue.service';
     ProductsModule,
     CaixaModule,
     OrderModule,
-    QueueModule
+    QueueModule,
+
   ],
-  controllers: [AppController],
+  controllers: [VideoController],
   providers: [AppService, TasksService, VideoMakerService, TelegramService, BinanceService, OrderService, QueueService],
 })
 export class AppModule { }

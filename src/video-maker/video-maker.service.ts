@@ -10,8 +10,6 @@ import { QueueService } from 'src/queue/queue.service';
 const crypto = require('crypto');
 
 // Set the path to the FFmpeg executable
-ffmpeg.setFfmpegPath(ffmpegInstaller.path);
-ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
 
