@@ -21,8 +21,8 @@ export class TasksService {
   }
   @Cron('0 */2 * * *')
   async handleVideoMensage() {
-    const nameString = await this.videoMaker.createNewVdo("Anime")
-    return this.telegramService.uploadVideo('-4057079951', nameString)
+
+    return
   }
 
   // @Cron(CronExpression.EVERY_MINUTE)

@@ -1,34 +1,66 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { AppService } from './app.service';
-import { VideoMakerService } from './video-maker/video-maker.service';
-import { TelegramService } from './telegram/telegram.service';
+import { Controller, Get, Param, Res } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { TelegramService } from '../src/telegram/telegram.service';
 
-@Controller()
-export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly videoMaker: VideoMakerService,
-    private readonly telegramService: TelegramService
-  ) { }
+export class GetParamsVideoDTO {
+  @ApiProperty()
+  channel: string;
 
-  // @Get()
-  // preload(): Promise<string> {
-  //   return this.appService.preload();
-  // }
+  @ApiProperty()
+  videoPath: string;
+}
 
-  // @Get(':number')
-  // sendMensagem(@Param('number') number: number): Promise<string> {
-  //   return this.appService.getNumberMensage(number)
-  // }
+export class GetParamsMessageDTO {
+  @ApiProperty()
+  channel: string;
 
-  @Get('/create-video')
-  async createVideo(): Promise<void> {
-    const string = await this.videoMaker.createNewVdo("Anime");
-    return this.telegramService.uploadVideo('-4057079951', string)
+  @ApiProperty()
+  msg: string;
+}
+
+
+
+@ApiTags('video')
+@Controller('video')
+export class VideoController {
+  constructor(private readonly telegramService: TelegramService) { }
+
+  @Get('create-video/:channel/:path')
+  @ApiOperation({ summary: 'Upload a video to a specific channel' })
+  @ApiParam({ name: 'channel', type: 'string', description: 'Channel ID' })
+  @ApiParam({ name: 'path', type: 'string', description: 'Path to the video file' })
+  @ApiResponse({ status: 200, description: 'Video uploaded successfully' })
+  @ApiResponse({ status: 500, description: 'Error uploading video' })
+  async createVideo(
+    @Param() params: GetParamsVideoDTO,
+    @Res() res: Response
+  ): Promise<void> {
+    try {
+      const { channel, videoPath } = params;
+      await this.telegramService.uploadVideo(channel, videoPath);
+      res.status(200).send('Video uploaded successfully');
+    } catch (error) {
+      res.status(500).send('Error uploading video');
+    }
   }
 
-  @Get('/send-message')
-  async sendMessage() {
-    return this.telegramService.sendMessageToSpecificChat('Ola', "-4057079951")
+  @Get('send-message/:channel/:msg')
+  @ApiOperation({ summary: 'Send a message to a specific chat' })
+  @ApiParam({ name: 'channel', type: 'string', description: 'Channel ID' })
+  @ApiParam({ name: 'msg', type: 'string', description: 'Message content' })
+  @ApiResponse({ status: 200, description: 'Message sent successfully' })
+  @ApiResponse({ status: 500, description: 'Error sending message' })
+  async sendMessage(
+    @Param() params: GetParamsMessageDTO,
+    @Res() res: Response
+  ): Promise<void> {
+    try {
+      const { channel, msg } = params;
+      await this.telegramService.sendMessageToSpecificChat(msg, channel);
+      res.status(200).send('Message sent successfully');
+    } catch (error) {
+      res.status(500).send('Error sending message');
+    }
   }
 }

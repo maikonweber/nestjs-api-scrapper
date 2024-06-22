@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,14 @@ async function bootstrap() {
   };
 
   app.enableCors();
+
+  app.use(
+    ['/api/docs'], // Rotas a serem protegidas
+    basicAuth({
+      challenge: true,
+      users: { 'admin': 'mara128sio4' }, // Substitua por usuário e senha reais
+    }),
+  );
 
 
   const config = new DocumentBuilder()
@@ -31,4 +40,3 @@ async function bootstrap() {
 
   await app.listen(3001);
 }
-bootstrap();

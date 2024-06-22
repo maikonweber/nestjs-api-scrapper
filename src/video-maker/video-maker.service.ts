@@ -6,7 +6,7 @@ import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as ffprobePath from 'ffprobe-static';
 import { TelegramService } from 'src/telegram/telegram.service';
 import { PrismaService } from 'prisma/PrismaService';
-import { Console } from 'console';
+import { QueueService } from 'src/queue/queue.service';
 const crypto = require('crypto');
 
 // Set the path to the FFmpeg executable
@@ -14,8 +14,10 @@ ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
+
     constructor(
-        private readonly prismaService: PrismaService
+        private readonly prismaService: PrismaService,
+        private readonly queueService: QueueService
     ) {
 
     }
@@ -59,82 +61,59 @@ export class VideoMakerService {
 
 
     async createNewVdo(categoria) {
-        const folderPath = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/video'
-        const musicFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/music'
-        const outFolder = '/home/maikon/Desktop/Projetos/nestjs-api-scrapper/src/video-maker/output'
+        const folderPath = '/home/maikon/Desktop/Projetos/video';
+        const outFolder = '/home/maikon/Desktop/Projetos/output';
 
-        // const music = fs.readdirSync(musicFolder)
         const files = fs.readdirSync(folderPath);
 
-
         if (files.length === 0) {
-            throw new Error('No files found the specified Folder');
+            throw new Error('Nenhum arquivo encontrado na pasta especificada.');
+
         }
 
         const randomVideoFile = path.join(folderPath, files[Math.floor(Math.random() * files.length)]);
+        const outputVideoPath = path.join(outFolder, `output_${crypto.createHash('sha256').update('42').digest('hex')}.mp4`);
 
-        // const randomMusicFile = path.join(musicFolder, music[Math.floor(Math.random() * music.length)]);
+        console.log("Caminho do vídeo de saída:", outputVideoPath);
 
-        const outputVideoPath = path.join(outFolder, `output_${crypto.createHash('sha256').update('42').digest('hex')}.mp4`); // Customize the output path as needed
+        ffmpeg.ffprobe(randomVideoFile, async (err, metadata) => {
+            if (err) {
+                console.error('Erro ao obter metadados do vídeo:', err);
+                throw err;
+            }
 
-        console.log("output video path", outputVideoPath)
+            const startTime = Math.floor(Math.random() * (metadata.format.duration - 300));
+            const maxDuration = 300; // 5 minutos em segundos
+            const endTime = startTime + Math.floor(Math.random() * maxDuration);
 
-        return new Promise<string>((resolve, reject) => {
-            ffmpeg.ffprobe(randomVideoFile, (err, metadata) => {
-                if (err) {
-                    console.error('Error getting video metadata:', err);
-                } else {
+            console.log('Tempo de início aleatório:', startTime);
+            console.log('Tempo de fim aleatório:', endTime);
 
-                    const startTime = Math.floor(Math.random() * (metadata.format.duration - 300));
-
-
-                    const maxDuration = 300; // 5 minutes in seconds
-                    const endTime = startTime + Math.floor(Math.random() * maxDuration);
-
-                    console.log('Random Start Time:', startTime);
-                    console.log('Random End Time:', endTime);
-
-                    this.confirmeIfThisCutExist(startTime, endTime, randomVideoFile)
-                        .then(rows => {
-                            console.log(rows)
-                            if (rows > 0) {
-                                reject()
-                            }
-                        })
-                        .catch(e => {
-                            console.log(e)
-                            reject()
-                        })
-
-                    this.registreVideoCreate(randomVideoFile, startTime, endTime, categoria)
-                        .then().catch(e => {
-                            console.log(e)
-                            reject()
-                        })
-
-                    const ffmpegCommand = ffmpeg()
-                        .input(randomVideoFile)
-                        .inputOptions([`-ss ${startTime}`, `-t ${endTime - startTime}`])  // Set start and duration
-                        .outputOptions('-c:v libx264')  // Change codec if needed
-                        .outputOptions('-c:a aac')      // Change audio codec if needed
-                        .outputOptions('-strict -2')    // Allow experimental codecs
-                        // Add random background music
-                        .audioCodec('aac')              // Change audio codec for music if needed
-                        .on('end', () => {
-                            console.log('Video creation finished.');
-                            resolve(outputVideoPath);
-                        })
-                        .on('error', (err) => {
-                            console.error('Error:', err);
-                            reject(err);
-                        });
-
-                    // Save the output video to the specified path
-
-                    ffmpegCommand.save(outputVideoPath);
+            try {
+                const cutExists = await this.confirmeIfThisCutExist(startTime, endTime, randomVideoFile);
+                if (cutExists) {
+                    throw new Error('Já existe um corte conflitante.');
                 }
 
-            })
+                await this.registreVideoCreate(randomVideoFile, startTime, endTime, categoria);
+
+                // Enviar mensagem para a fila usando QueueService
+                const message = {
+                    inputFile: randomVideoFile,
+                    outputFilePath: outputVideoPath,
+                    startTime: startTime,
+                    endTime: endTime,
+                };
+
+                console.log(message)
+
+                await this.queueService.sendToQueueVideo(message);
+                console.log('Mensagem enviada para a fila de vídeo:', message);
+
+            } catch (error) {
+                console.error('Erro ao criar novo vídeo:', error);
+                throw error;
+            }
         });
     }
 

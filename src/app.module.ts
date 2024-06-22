@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { AppController } from './AppController';
 import { AppService } from './app.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TasksService } from './tasks-service/tasks-service.service';
@@ -19,6 +19,10 @@ import { CaixaModule } from './caixa/caixa.module';
 import { BinanceService } from './binance/binance.service';
 import { OrderModule } from './order/order.module';
 import { OrderService } from './order/order.service';
+import { ClientsModule } from '@nestjs/microservices';
+import { rabbitMQConfig } from '../src/rabbit.config';
+import { QueueModule } from './queue/queue.module';
+import { QueueService } from './queue/queue.service';
 
 @Module({
   imports: [
@@ -30,6 +34,8 @@ import { OrderService } from './order/order.service';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '5d' },
     }),
+
+    ClientsModule.register(rabbitMQConfig),
     PrismaModule,
     BinanceModule,
     PaymentModule,
@@ -38,9 +44,10 @@ import { OrderService } from './order/order.service';
     UsersModule,
     ProductsModule,
     CaixaModule,
-    OrderModule
+    OrderModule,
+    QueueModule
   ],
   controllers: [AppController],
-  providers: [AppService, TasksService, VideoMakerService, TelegramService, BinanceService, OrderService],
+  providers: [AppService, TasksService, VideoMakerService, TelegramService, BinanceService, OrderService, QueueService],
 })
 export class AppModule { }
