@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiTags } from '@nestjs/swagger';
 
 
 
@@ -13,6 +13,7 @@ class LoginDTO {
   password: string;
 }
 
+@ApiTags("Authorization")
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }

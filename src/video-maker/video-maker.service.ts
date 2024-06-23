@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as ffmpeg from 'fluent-ffmpeg';
@@ -10,6 +10,8 @@ import { QueueService } from 'src/queue/queue.service';
 const crypto = require('crypto');
 
 // Set the path to the FFmpeg executable
+ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+ffmpeg.setFfprobePath(ffprobePath.path)
 @Injectable()
 export class VideoMakerService {
 
@@ -90,7 +92,7 @@ export class VideoMakerService {
             try {
                 const cutExists = await this.confirmeIfThisCutExist(startTime, endTime, randomVideoFile);
                 if (cutExists) {
-                    throw new Error('Já existe um corte conflitante.');
+                    return new HttpException('Forbidden', HttpStatus.FORBIDDEN)
                 }
 
                 await this.registreVideoCreate(randomVideoFile, startTime, endTime, categoria);
@@ -110,7 +112,7 @@ export class VideoMakerService {
 
             } catch (error) {
                 console.error('Erro ao criar novo vídeo:', error);
-                throw error;
+                return new InternalServerErrorException()
             }
         });
     }

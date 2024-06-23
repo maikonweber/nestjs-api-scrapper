@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule'
+import { every } from 'rxjs';
 import { AppService } from 'src/app.service';
 import { BinanceService } from 'src/binance/binance.service';
 import { OrderService } from 'src/order/order.service';
@@ -19,9 +20,9 @@ export class TasksService {
   ) {
 
   }
-  @Cron('0 */2 * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleVideoMensage() {
-
+    
     return
   }
 

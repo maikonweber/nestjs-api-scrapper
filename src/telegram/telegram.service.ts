@@ -37,9 +37,15 @@ export class TelegramService {
       throw error;
     }
   }
-  
+
   async uploadVideo(chatId: string, videoPath: string): Promise<any> {
     const url = `${this.apiUrl}${this.botToken}/sendVideo`;
+
+    if (!fs.existsSync(videoPath)) {
+      this.logger.error('Erro: Arquivo de vídeo não encontrado:', videoPath);
+      throw new Error('Arquivo de vídeo não encontrado');
+    }
+
 
     const formData = new FormData();
     formData.append('chat_id', chatId);
