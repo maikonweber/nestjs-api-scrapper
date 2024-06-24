@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model user {
+model users {
   id                     Int                      @id @default(autoincrement()) @map("id")
   username               String                   @unique
   name                   String
@@ -18,6 +18,7 @@ model user {
   is_admin               Boolean                  @default(false) @map("is_admin")
   lastname               String
   cpf                    String                   @unique
+  permission             Json
   binance_key_user       binance_key_user[]
   user_transaction       bitcoin_transactions[]
   caixa_central          caixa_central[]
@@ -25,13 +26,36 @@ model user {
   investimento_user      investimento_user[]
   investimentos_carteira investimentos_carteira[]
   transfer_log           transfer_carteira_log[]
+  email_template         email_template[]
+  email_send             email_send[]
+}
+
+model email_template {
+  id       Int    @id @default(autoincrement())
+  user_id  Int
+  user     users  @relation(fields: [user_id], references: [id])
+  template String // Assumi que o campo "template" é do tipo Text ou String
+}
+
+model email_send {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      users    @relation(fields: [user_id], references: [id])
+  toEmail   String
+  fromEmail String
+  body      String
+  category  String   @map("category")
+  enviado   DateTime
+  cancelado DateTime
+  falha     DateTime
 }
 
 model carteira {
   saldo   Decimal
   id      Int     @id @default(autoincrement()) @map("id")
   user_id Int
-  user    user    @relation(fields: [user_id], references: [id])
+  users   users?  @relation(fields: [usersId], references: [id])
+  usersId Int?
 }
 
 model rentabilida_tabela {
@@ -44,7 +68,7 @@ model investimentos_carteira {
   saldo   Decimal
   id      Int     @id @default(autoincrement()) @map("id")
   user_id Int
-  user    user    @relation(fields: [user_id], references: [id])
+  user    users   @relation(fields: [user_id], references: [id])
 }
 
 model binance_key_user {
@@ -53,7 +77,7 @@ model binance_key_user {
   app_secret String
   url        String
   user_id    Int
-  user       user   @relation(fields: [user_id], references: [id])
+  user       users  @relation(fields: [user_id], references: [id])
 }
 
 model transfer_carteira_log {
@@ -62,7 +86,7 @@ model transfer_carteira_log {
   sender_id  Int
   receive_id Int
   user_id    Int
-  user       user    @relation(fields: [user_id], references: [id])
+  user       users   @relation(fields: [user_id], references: [id])
 }
 
 model investimento_user {
@@ -73,7 +97,7 @@ model investimento_user {
   end_time      DateTime
   expect        Decimal
   user_id       Int
-  user          user     @relation(fields: [user_id], references: [id])
+  user          users    @relation(fields: [user_id], references: [id])
 }
 
 model bitcoin_transactions {
@@ -86,7 +110,7 @@ model bitcoin_transactions {
   win_loss       Boolean
   amout_win      Decimal  @db.Decimal(20, 8)
   user_id        Int
-  user           user     @relation(fields: [user_id], references: [id])
+  user           users    @relation(fields: [user_id], references: [id])
 }
 
 model testOrder {
@@ -106,7 +130,7 @@ model caixa_central {
   sub_tipo      sub_tipo
   typo          Tipo
   registre_date DateTime @default(now())
-  user          user     @relation(fields: [user_id], references: [id])
+  user          users    @relation(fields: [user_id], references: [id])
 }
 
 model product {

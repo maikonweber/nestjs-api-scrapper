@@ -13,7 +13,7 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto) {
     const hash = this.authService.hasher(createUserDto.password, '');
-    return this.prismaService.user.create(
+    return this.prismaService.users.create(
       {
         data: {
           name: createUserDto.name,
@@ -29,11 +29,11 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.users.findMany();
   }
 
   findOne(id: number) {
-    return this.prismaService.user.findFirstOrThrow(
+    return this.prismaService.users.findFirstOrThrow(
       {
         where: {
           id: id
@@ -43,7 +43,7 @@ export class UsersService {
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prismaService.user.update({
+    return this.prismaService.users.update({
       where: {
         id: id
       },
@@ -52,7 +52,7 @@ export class UsersService {
   }
 
   remove(id: number) {
-    return this.prismaService.user.delete({
+    return this.prismaService.users.delete({
       where: {
         id: id
       }
