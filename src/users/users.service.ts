@@ -22,7 +22,8 @@ export class UsersService {
           lastname: createUserDto.lastname,
           username: createUserDto.username,
           hashed: hash.hashedpassword,
-          salt: hash.salt
+          salt: hash.salt,
+          permission: { email_mass: false, betinsigth: false, }
         }
       }
     )
